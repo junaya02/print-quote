@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#d4d0c8" />
+<title>PrintQuote 2000</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="window">
+  <div class="titlebar"><div class="title-left"><span class="appicon"></span><span>PrintQuote 2000</span></div><div class="winctrls"><button class="winctrl">_</button><button class="winctrl">□</button><button class="winctrl">×</button></div></div>
+  <div class="menubar"><span>파일(F)</span><span>편집(E)</span><span>도구(T)</span><span>도움말(H)</span></div>
+  <div class="toolbar">
+    <button class="toolbtn" id="newBtn"><span class="toolicon">▧</span>새 견적</button>
+    <button class="toolbtn" id="saveHistoryBtn"><span class="toolicon">▣</span>기록 저장</button>
+    <button class="toolbtn" id="copyTopBtn"><span class="toolicon">▤</span>견적 복사</button>
+    <div class="sep"></div><div class="hint">Bambu Studio의 사용량과 출력 시간을 입력하세요.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="quote">견적</button><button class="tab" data-tab="materials">재료 관리</button><button class="tab" data-tab="settings">설정</button><button class="tab" data-tab="history">기록</button>
+  </div>
+
+  <section class="panel active" id="panel-quote">
+    <div class="content">
+      <section>
+        <div class="group"><div class="group-title">견적 입력</div>
+          <div class="formgrid">
+            <div class="field full"><label for="projectName">프로젝트명</label><input class="textbox" id="projectName" type="text" placeholder="예: Leather mold 100×100"></div>
+            <div class="field"><label for="materialPreset">필라멘트 프리셋</label><select class="selectbox" id="materialPreset"></select></div>
+            <div class="field"><label for="spoolPrice">필라멘트 가격 (1 kg)</label><div class="controlrow"><input class="textbox" id="spoolPrice" type="number" min="0" step="100"><span class="unit">원/kg</span></div></div>
+            <div class="field"><label for="grams">필라멘트 사용량</label><div class="controlrow"><input class="textbox" id="grams" type="number" min="0" step="1" value="100"><span class="unit">g</span></div></div>
+            <div class="field"><label for="hours">출력 시간</label><div class="controlrow"><input class="textbox" id="hours" type="number" min="0" step="1" value="2"><span class="unit">시간</span></div></div>
+            <div class="field"><label for="minutes">추가 시간</label><div class="controlrow"><input class="textbox" id="minutes" type="number" min="0" max="59" step="1" value="0"><span class="unit">분</span></div></div>
+            <div class="field"><label for="hourlyRate">시간당 장비비</label><div class="controlrow"><input class="textbox" id="hourlyRate" type="number" min="0" step="100"><span class="unit">원/h</span></div></div>
+            <div class="field"><label for="minimumFee">최소 작업비</label><div class="controlrow"><input class="textbox" id="minimumFee" type="number" min="0" step="500"><span class="unit">원</span></div></div>
+            <div class="field"><label for="riskPct">실패 / 리스크</label><div class="controlrow"><input class="textbox" id="riskPct" type="number" min="0" step="1"><span class="unit">%</span></div><div class="quick"><button class="mini" data-risk="0">0%</button><button class="mini" data-risk="5">5%</button><button class="mini" data-risk="10">10%</button><button class="mini" data-risk="15">15%</button></div></div>
+          </div>
+          <div class="info">기본 계산식: 재료비 + 장비 사용료 + 리스크 비용. 계산 결과가 최소 작업비보다 낮으면 최소 작업비가 적용됩니다.</div>
+        </div>
+        <div class="group"><div class="group-title">장비 정보</div><div class="profile"><div><span>프린터</span><b>Bambu Lab P1S</b></div><div><span>노즐</span><b>0.4 mm</b></div><div><span>방식</span><b>FDM</b></div><div><span>상태</span><b>Ready</b></div></div></div>
+      </section>
+      <aside>
+        <div class="group"><div class="group-title">견적 결과</div><div class="resultbox"><div class="summary-title" id="projectBadge">이름 없는 프로젝트</div><div class="total" id="totalCost">0원</div><div class="rows"><div class="row"><span>재료비</span><b id="materialCost">0원</b></div><div class="row"><span>장비 사용료</span><b id="timeCost">0원</b></div><div class="row"><span>리스크 비용</span><b id="riskCost">0원</b></div><div class="row"><span>계산 소계</span><b id="subtotalCost">0원</b></div><div class="row"><span>최소 작업비 적용</span><b id="minimumApplied">아니오</b></div><div class="row"><span>총 출력 시간</span><b id="timeLabel">0시간 0분</b></div></div><div class="result-actions"><button class="action" id="resetBtn">초기화</button><button class="action primary" id="copyBtn">견적 복사</button></div></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-materials">
+    <div class="group"><div class="group-title">필라멘트 프리셋</div>
+      <div class="formgrid"><div class="field"><label for="newMatName">재료명</label><input class="textbox" id="newMatName" placeholder="예: Bambu PLA Basic"></div><div class="field"><label for="newMatPrice">가격 (1 kg)</label><div class="controlrow"><input class="textbox" id="newMatPrice" type="number" min="0" step="100" value="25000"><span class="unit">원/kg</span></div></div></div>
+      <div class="inline-actions"><button class="toolbtn" id="addMaterialBtn">＋ 프리셋 추가</button></div>
+      <div class="tablewrap" style="margin-top:12px"><table class="classic-table"><thead><tr><th>재료명</th><th>가격</th><th>관리</th></tr></thead><tbody id="materialsBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-settings">
+    <div class="group"><div class="group-title">기본값 설정</div>
+      <div class="settings-grid"><div class="field"><label for="setHourlyRate">기본 시간당 장비비</label><div class="controlrow"><input class="textbox" id="setHourlyRate" type="number" min="0" step="100"><span class="unit">원/h</span></div></div><div class="field"><label for="setMinimumFee">기본 최소 작업비</label><div class="controlrow"><input class="textbox" id="setMinimumFee" type="number" min="0" step="500"><span class="unit">원</span></div></div><div class="field"><label for="setRiskPct">기본 리스크</label><div class="controlrow"><input class="textbox" id="setRiskPct" type="number" min="0" step="1"><span class="unit">%</span></div></div><div class="field"><label>&nbsp;</label><label class="checkbox"><input type="checkbox" id="soundEnabled"> 계산/복사 완료음 사용</label></div></div>
+      <div class="inline-actions"><button class="toolbtn" id="saveSettingsBtn">설정 저장</button><button class="toolbtn" id="restoreDefaultsBtn">기본값 복원</button></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-history">
+    <div class="group"><div class="group-title">최근 견적</div><div id="historyWrap"></div><div class="inline-actions"><button class="toolbtn" id="clearHistoryBtn">기록 전체 삭제</button></div></div>
+  </section>
+
+  <div class="footer-note">PrintQuote 2000 · Local calculator · 데이터는 이 브라우저에만 저장됩니다.</div>
+  <div class="statusbar"><div class="statuspart" id="statusText">준비</div><div class="statuspart">P1S / 0.4</div><div class="statuspart" id="clock">--:--</div></div>
+</div>
+<div class="toast" id="toast">완료</div>
+<div class="modal-backdrop" id="modal"><div class="dialog"><div class="dialog-title" id="dialogTitle">확인</div><div class="dialog-body"><div class="dialog-icon">⚠</div><div id="dialogText">계속하시겠습니까?</div></div><div class="dialog-actions"><button id="dialogNo">아니오</button><button id="dialogYes">예</button></div></div></div>
+<script src="app.js"></script>
+</body>
+</html>
